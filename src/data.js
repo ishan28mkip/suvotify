@@ -110,7 +110,6 @@ function chillHop() {
         "Cause even the stars they burn\nSome even fall to the earth\nWe've got a lot to learn\nGod knows we're worth it\nNo, I won't give up",
       line: "Things and people change, we will change, it's about accepting the new us at every point really",
     },
-    // 1:44 to 2:10
   ];
 }
 

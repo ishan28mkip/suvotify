@@ -30,6 +30,12 @@ const App = () => {
   }, [currentSong]);
 
   // Functions
+
+  const metadata = (e) => {
+    audioRef.current.currentTime = currentSong.start;
+    updateTimeHandler(e);
+  };
+
   const updateTimeHandler = (e) => {
     const currentTime = e.target.currentTime;
     if (currentTime >= currentSong.end) {
@@ -91,7 +97,7 @@ const App = () => {
       />
       <Credit />
       <audio
-        onLoadedMetadata={updateTimeHandler}
+        onLoadedMetadata={metadata}
         onTimeUpdate={updateTimeHandler}
         onEnded={songEndHandler}
         ref={audioRef}
