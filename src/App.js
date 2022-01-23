@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import "./App.css";
 
@@ -12,92 +12,119 @@ import Credit from "./components/Credit";
 import data from "./data";
 
 const App = () => {
-	// Ref
-	const audioRef = useRef(null);
+  // Ref
+  const audioRef = useRef(null);
 
-	// State
-	const [songs, setSongs] = useState(data());
-	const [currentSong, setCurrentSong] = useState(songs[0]);
-	const [isPlaying, setIsPlaying] = useState(false);
-	const [libraryStatus, setLibraryStatus] = useState(false);
-	const [songInfo, setSongInfo] = useState({
-		currentTime: 0,
-		duration: 0,
-	});
+  // State
+  const [songs, setSongs] = useState(data());
+  const [currentSong, setCurrentSong] = useState(songs[0]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [libraryStatus, setLibraryStatus] = useState(false);
+  const [songInfo, setSongInfo] = useState({
+    currentTime: 0,
+    duration: 0,
+  });
 
-	// Functions
-	const updateTimeHandler = (e) => {
-		const currentTime = e.target.currentTime;
-		const duration = e.target.duration;
-		setSongInfo({ ...songInfo, currentTime, duration });
-	};
+  useEffect(() => {
+    audioRef.current.currentTime = currentSong.start;
+  }, [currentSong]);
 
-	const songEndHandler = async () => {
-		let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
-		let nextSong = songs[(currentIndex + 1) % songs.length];
-		await setCurrentSong(nextSong);
+  // Functions
+  const updateTimeHandler = (e) => {
+    const currentTime = e.target.currentTime;
+    if (currentTime >= currentSong.end) {
+      songEndHandler();
+    }
+    const duration = e.target.duration;
+    setSongInfo({ ...songInfo, currentTime, duration });
+  };
 
-		const newSongs = songs.map((song) => {
-			if (song.id === nextSong.id) {
-				return {
-					...song,
-					active: true,
-				};
-			} else {
-				return {
-					...song,
-					active: false,
-				};
-			}
-		});
-		setSongs(newSongs);
+  const songEndHandler = async () => {
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+    let nextSong = songs[(currentIndex + 1) % songs.length];
+    await setCurrentSong(nextSong);
 
-		if (isPlaying) {
-			audioRef.current.play();
-		}
-	};
+    const newSongs = songs.map((song) => {
+      if (song.id === nextSong.id) {
+        return {
+          ...song,
+          active: true,
+        };
+      } else {
+        return {
+          ...song,
+          active: false,
+        };
+      }
+    });
+    setSongs(newSongs);
 
-	return (
-		<AppContainer libraryStatus={libraryStatus}>
-			<Nav libraryStatus={libraryStatus} setLibraryStatus={setLibraryStatus} />
-			<Song currentSong={currentSong} />
-			<Player
-				isPlaying={isPlaying}
-				setIsPlaying={setIsPlaying}
-				currentSong={currentSong}
-				setCurrentSong={setCurrentSong}
-				audioRef={audioRef}
-				songInfo={songInfo}
-				setSongInfo={setSongInfo}
-				songs={songs}
-				setSongs={setSongs}
-			/>
-			<Library
-				songs={songs}
-				setCurrentSong={setCurrentSong}
-				audioRef={audioRef}
-				isPlaying={isPlaying}
-				setSongs={setSongs}
-				libraryStatus={libraryStatus}
-			/>
-			<Credit />
-			<audio
-				onLoadedMetadata={updateTimeHandler}
-				onTimeUpdate={updateTimeHandler}
-				onEnded={songEndHandler}
-				ref={audioRef}
-				src={currentSong.audio}
-			/>
-		</AppContainer>
-	);
+    if (isPlaying) {
+      audioRef.current.play();
+    }
+  };
+
+  return (
+    <AppContainer libraryStatus={libraryStatus}>
+      <Nav libraryStatus={libraryStatus} setLibraryStatus={setLibraryStatus} />
+      <Song currentSong={currentSong} />
+      <Player
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
+        currentSong={currentSong}
+        setCurrentSong={setCurrentSong}
+        audioRef={audioRef}
+        songInfo={songInfo}
+        setSongInfo={setSongInfo}
+        songs={songs}
+        setSongs={setSongs}
+      />
+      <LyricsContainer>{currentSong.lyrics}</LyricsContainer>
+      <LineContainer>{currentSong.line}</LineContainer>
+      <Library
+        songs={songs}
+        setCurrentSong={setCurrentSong}
+        audioRef={audioRef}
+        isPlaying={isPlaying}
+        setSongs={setSongs}
+        libraryStatus={libraryStatus}
+      />
+      <Credit />
+      <audio
+        onLoadedMetadata={updateTimeHandler}
+        onTimeUpdate={updateTimeHandler}
+        onEnded={songEndHandler}
+        ref={audioRef}
+        src={currentSong.audio}
+      />
+    </AppContainer>
+  );
 };
 
+const LyricsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: pre;
+`;
+
+const LineContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+`;
+
 const AppContainer = styled.div`
-	transition: all 0.5s ease;
-	margin-left: ${(p) => (p.libraryStatus ? "20rem" : "0")};
-	@media screen and (max-width: 768px) {
-		margin-left: 0;
-	}
+  transition: all 0.5s ease;
+  margin-left: ${(p) => (p.libraryStatus ? "20rem" : "0")};
+  @media screen and (max-width: 768px) {
+    margin-left: 0;
+  }
 `;
 
 export default App;
