@@ -101,7 +101,7 @@ const App = () => {
         onTimeUpdate={updateTimeHandler}
         onEnded={songEndHandler}
         ref={audioRef}
-        src={currentSong.audio}
+        src={`${currentSong.audio}#${currentSong.start}`}
       />
     </AppContainer>
   );

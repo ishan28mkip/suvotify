@@ -110,6 +110,20 @@ function chillHop() {
         "Cause even the stars they burn\nSome even fall to the earth\nWe've got a lot to learn\nGod knows we're worth it\nNo, I won't give up",
       line: "Things and people change, we will change, it's about accepting the new us at every point really",
     },
+    {
+      name: "Kalank Title Track",
+      cover: "https://i.ibb.co/HKqpC5d/kalank.jpg",
+      artist: "Arijit Singh",
+      audio:
+        "https://www.mboxdrive.com/Kalank%20Title%20Track%20-%20Lyrical%20_%20Alia%20Bhatt%20,%20Varun%20Dhawan%20_%20Arijit%20Singh%20_%20Pritam_%20Amitabh.mp3",
+      color: ["#205950", "#2ab3bf"],
+      id: uuidv4(),
+      active: false,
+      start: 227,
+      end: 268,
+      lyrics: "Main tera x 213.68 times",
+      line: "For most it is an instagram reel song, for us it has a different meaning",
+    },
   ];
 }
 
@@ -128,6 +142,8 @@ export default chillHop;
 // Heer toh badi sad hai
 
 // I won't give up on us
+
+// Kalank Title Track
 
 // <a href="https://ibb.co/xD2HXbx"><img src="https://i.ibb.co/s2gHb48/gucha.jpg" alt="gucha" border="0"></a>
 // <a href="https://ibb.co/L5jtHvc"><img src="https://i.ibb.co/bJwBD7C/heer.jpg" alt="heer" border="0"></a>
